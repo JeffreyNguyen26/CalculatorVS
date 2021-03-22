@@ -13,6 +13,8 @@ jobs:
         destination: BuiltFile
     resource_class: windows.medium
     shell: powershell.exe -ExecutionPolicy Bypass
+  
+
 
 workflows:
   version: 2
