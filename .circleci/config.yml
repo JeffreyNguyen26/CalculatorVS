@@ -1,0 +1,21 @@
+version: 2.1
+jobs:
+  build:
+    machine:
+      image: windows-server-2019-vs2019:stable
+    steps:
+    - checkout
+    - run:
+        name: "Build"
+        command: dotnet build ./CalculatorVS > /artifact
+    - store_artifacts:
+        path: ./CalculatorVS/bin/Debug/netcoreapp3.1
+        destination: BuiltFile
+    resource_class: windows.medium
+    shell: powershell.exe -ExecutionPolicy Bypass
+
+workflows:
+  version: 2
+  workflow:
+    jobs:
+      - build
