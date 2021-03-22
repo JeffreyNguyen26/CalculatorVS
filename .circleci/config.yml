@@ -26,7 +26,7 @@ jobs:
           command: dotnet test "NUnit.Test/NUnit.Test.csproj" --logger trx
     - store_artifacts:
           path: ./CalculatorVS/NUnit.Test
-          destination: TestResult
+          destination: TestResults
         
 
 workflows:
