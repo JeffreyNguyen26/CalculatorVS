@@ -23,7 +23,7 @@ jobs:
     - run: mkdir test-reports
     - run:
           name: "Run Application Tests"
-          command: dotnet test "NUnit.Test/NUnit.Test.csproj" --logger trx
+          command: dotnet test "NUnit.Test/NUnit.Test.csproj" --logger trx > /artifact
     - store_artifacts:
           path: ./CalculatorVS/NUnit.Test/TestResults
           destination: TestResults
