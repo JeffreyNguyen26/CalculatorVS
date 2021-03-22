@@ -23,7 +23,7 @@ jobs:
     - run: mkdir test-reports
     - run:
           name: "Run Application Tests"
-          command: dotnet.exe test -v n --results-directory:test_file --logger "console;verbosity=detailed"
+          command: dotnet test "CakeCoverageTest.Test/CakeCoverageTest.Test.csproj" --logger trx
     - store_artifacts:
           path: C:\Users\circleci\project\test_file
         
