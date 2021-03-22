@@ -24,9 +24,9 @@ jobs:
         name: "Run Application Tests"
         command: dotnet test "NUnit.Test/NUnit.Test.csproj" --logger trx 
     - store_test_results:
-        path: ./CalculatorVS/NUnit.Test/TestResults
+        path: ./NUnit.Test/TestResults
     - store_artifacts:
-        path: ./CalculatorVS/NUnit.Test/TestResults
+        path: ./NUnit.Test/TestResults
         destination: TestResults
 
         
