@@ -20,12 +20,11 @@ jobs:
     resource_class: windows.medium
     steps:
     - checkout
-    - run: mkdir test-reports
     - run:
           name: "Run Application Tests"
           command: dotnet test "NUnit.Test/NUnit.Test.csproj" --logger trx 
     - store_artifacts:
-          path: ./CalculatorVS/NUnit.Test/bin/Debug/netcoreapp3.1 > /artifact
+          path: ./NUnit.Test/bin/Debug/netcoreapp3.1 > /artifact
           destination: TestFile
         
 
