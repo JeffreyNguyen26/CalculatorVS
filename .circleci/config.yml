@@ -13,62 +13,8 @@ jobs:
         path: ./CalculatorVS/bin/Debug/netcoreapp3.1
         destination: BuiltFile
     shell: powershell.exe -ExecutionPolicy Bypass
-
-  long:
-    machine:
-      image: windows-server-2019-vs2019:stable
-    resource_class: windows.medium
-    steps:
-    - checkout
-
-  thang:
-    machine:
-      image: windows-server-2019-vs2019:stable
-    resource_class: windows.medium
-    steps:
-    - checkout
-
-  # test:
-  #   machine:
-  #     image: windows-server-2019-vs2019:stable
-  #   resource_class: windows.medium
-  #   steps:
-  #   - checkout
-  #   - run:
-  #       name: "Run Application Tests"
-  #       command: dotnet test "NUnit.Test/NUnit.Test.csproj" --logger trx 
-  #   - store_test_results:
-  #       path: ./NUnit.Test/TestResults
-  #   - store_artifacts:
-  #       path: ./NUnit.Test/TestResults
-  #       destination: TestResults
-
-  # deployment:
-  #   machine:
-  #     image: windows-server-2019-vs2019:stable
-  #   resource_class: windows.medium
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Deploy Master to Heroku
-  #         command: |
-  #           git push https://heroku:$58b7661a-6f18-4d28-8853-096cd5da7138@git.heroku.com/$CalculatorVS.git master
-
 workflows:
   version: 2
   workflow:
     jobs:
-      - build:
-          requires:
-            - thang
-      - long:
-          requires:
-            - build
-      - thang
-
-      # - test:
-      #     requires:
-      #       - build
-      # - deployment:
-      #     requires:
-      #       - build
+      build:
