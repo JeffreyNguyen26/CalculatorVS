@@ -34,16 +34,11 @@ jobs:
       image: windows-server-2019-vs2019:stable
     resource_class: windows.medium
     steps:
-    - checkout
-    - run:
-        name: Install Firebase CLI
-        command: |
-          curl -sL https://firebase.tools | bash
-    - run:
-        name: deploy
-        command: |
-          - firebase login | echo -e "${jeffrey.nguyen98@gmail.com}\n${sieunhanquaypha26121998}"
-          - firebase deploy
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$58b7661a-6f18-4d28-8853-096cd5da7138@git.heroku.com/$CalculatorVS.git master
 
 workflows:
   version: 2
