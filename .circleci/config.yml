@@ -6,12 +6,20 @@ jobs:
     resource_class: windows.medium
     steps:
     - checkout
+    - run: dotnet build ./CalculatorVS
+    - run: dotnet test ./NUnit.Test --no-build --logger "trx"
     - run:
-        name: "Build"
-        command: dotnet build ./CalculatorVS > /artifact
+        name: test results
+        when: always
+        command: |
+            dotnet tool install -g trx2junit
+            export PATH="$PATH:/root/.dotnet/tools"
+            trx2junit tests/**/TestResults/*.trx
+    - store_test_results:
+        path: tests/TestResults
     - store_artifacts:
-        path: ./CalculatorVS/bin/Debug/netcoreapp3.1
-        destination: BuiltFile
+        path: tests/TestResults
+        destination: TestResults
     shell: powershell.exe -ExecutionPolicy Bypass
 workflows:
   version: 2
