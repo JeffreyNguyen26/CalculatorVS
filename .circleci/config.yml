@@ -20,7 +20,7 @@ jobs:
     resource_class: windows.medium
     steps:
     - checkout
-  
+
   # test:
   #   machine:
   #     image: windows-server-2019-vs2019:stable
@@ -52,7 +52,11 @@ workflows:
   workflow:
     jobs:
       - build
-      - long
+      - long:
+          requires:
+            - build
+            - build
+            - build
       # - test:
       #     requires:
       #       - build
