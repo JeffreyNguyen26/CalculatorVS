@@ -15,7 +15,6 @@ jobs:
           path: tests/TestResults
           destination: TestResults
     shell: powershell.exe -ExecutionPolicy Bypass
-
 workflows:
   version: 2
   workflow:
