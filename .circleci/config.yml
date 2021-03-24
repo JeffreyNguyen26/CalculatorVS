@@ -52,9 +52,7 @@ workflows:
   workflow:
     jobs:
       - build
-      - long:
-          requires:
-            - build
+      - long
       # - test:
       #     requires:
       #       - build
