@@ -23,9 +23,6 @@ jobs:
     - store_artifacts:
           path: tests/TestResults
           destination: TestResults
-    - store_artifacts:
-        path: ./CalculatorVS/bin/Debug/netcoreapp3.1
-        destination: BuiltFile
     shell: powershell.exe -ExecutionPolicy Bypass
 
 workflows:
