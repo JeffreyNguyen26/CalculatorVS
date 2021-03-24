@@ -21,6 +21,13 @@ jobs:
     steps:
     - checkout
 
+  thang:
+    machine:
+      image: windows-server-2019-vs2019:stable
+    resource_class: windows.medium
+    steps:
+    - checkout
+
   # test:
   #   machine:
   #     image: windows-server-2019-vs2019:stable
@@ -51,12 +58,14 @@ workflows:
   version: 2
   workflow:
     jobs:
-      - build
+      - build:
+          requires:
+            - thang
       - long:
           requires:
             - build
-            - build
-            - build
+      - thang
+
       # - test:
       #     requires:
       #       - build
