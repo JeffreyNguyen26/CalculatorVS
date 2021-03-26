@@ -6,7 +6,7 @@ jobs:
     steps:
     - run:
         name: "Trigger To Nococid"
-        command: curl --header "Content-Type:application/json" --data '{"CircleWorkflowId":"${CIRCLE_WORKFLOW_ID}","SprintId":"4ce069f1-7ce7-4701-21a4-08d8f03ffdbf","BranchId":"e576a1e9-7c5d-41d0-ee1f-08d8f040ef2c"}' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow"
+        command: curl --header "Content-Type:application/json" --data '{"CircleWorkflowId":"${CIRCLE_WORKFLOW_ID}","SprintId":"4ce069f1-7ce7-4701-21a4-08d8f03ffdbf","BranchId":"e576a1e9-7c5d-41d0-ee1f-08d8f040ef2c"}' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?id=${CIRCLE_WORKFLOW_ID}"
     resource_class: windows.medium
   build:
     machine:
