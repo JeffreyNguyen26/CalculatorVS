@@ -15,7 +15,7 @@ jobs:
     steps:
     - checkout
     - run:
-        name: "Build"
+        name: "Build2"
         command: dotnet build ./CalculatorVS
     - store_artifacts:
         path: ./CalculatorVS/bin/Debug/netcoreapp3.1
