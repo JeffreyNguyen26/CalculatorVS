@@ -34,6 +34,9 @@ jobs:
         command: |
             dotnet build ./NUnit.Test
             dotnet test ./NUnit.Test --no-build --logger "trx"
+    - run:
+        name: "Test Results"
+        command: |
             dotnet tool install -g trx2junit
             trx2junit ./NUnit.Test/TestResults/*.trx
     - store_test_results:
@@ -41,6 +44,9 @@ jobs:
     - store_artifacts:
         path: tests/TestResults
         destination: TestResults
+    - run:
+        name: "Test"
+        command: curl --header "Content-Type:application/json" --data '{"Step":2,"StageCode":3}' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}"
 workflows:
   version: 2
   workflow:
