@@ -32,14 +32,13 @@ jobs:
     - run:
         name: "Test"
         command: |
+            dotnet tool install -g trx2junit
             dotnet build ./NUnit.Test
             dotnet test ./NUnit.Test --no-build --logger "trx"
     - run:
         name: "Test Results"
         when: always
-        command: |
-            dotnet tool install -g trx2junit
-            trx2junit ./NUnit.Test/TestResults/*.trx
+        command: trx2junit ./NUnit.Test/TestResults/*.trx
     - store_test_results:
         path: ./NUnit.Test/TestResults
     - store_artifacts:
