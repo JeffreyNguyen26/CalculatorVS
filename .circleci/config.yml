@@ -24,6 +24,7 @@ jobs:
         name: "Build Complete"
         command: curl --header "Content-Type:application/json" --data '{"Step":1,"StageCode":2}' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}"
   test:
+    shell: powershell.exe -ExecutionPolicy Bypass
     machine:
       image: windows-server-2019-vs2019:stable
     resource_class: windows.medium
@@ -35,7 +36,6 @@ jobs:
             dotnet build ./NUnit.Test
             dotnet test ./NUnit.Test --no-build --logger "trx"
     - run:
-        shell: powershell.exe -ExecutionPolicy Bypass
         name: "Test Results"
         command: |
             dotnet tool install -g trx2junit
