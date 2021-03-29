@@ -42,9 +42,9 @@ jobs:
             dotnet tool install -g trx2junit
             trx2junit ./NUnit.Test/TestResults/*.trx
     - store_test_results:
-        path: ./NUnit.Test/TestResults
+        path: ./NUnit.Test/TestResults/ConvertedTestResults
     - store_artifacts:
-        path: tests/TestResults
+        path: ./NUnit.Test/TestResults
         destination: TestResults
     - run:
         name: "Test Complete"
