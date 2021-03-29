@@ -30,6 +30,7 @@ jobs:
     steps:
     - checkout
     - run:
+        shell: powershell.exe -ExecutionPolicy Bypass
         name: "Test"
         command: |
             dotnet build ./NUnit.Test
