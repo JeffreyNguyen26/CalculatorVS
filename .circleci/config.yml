@@ -36,6 +36,7 @@ jobs:
             dotnet test ./NUnit.Test --no-build --logger "trx"
     - run:
         name: "Test Results"
+        when: always
         command: |
             dotnet tool install -g trx2junit
             trx2junit ./NUnit.Test/TestResults/*.trx
@@ -46,8 +47,8 @@ jobs:
         destination: TestResults
     - run:
         name: "Test Complete"
+        when: always
         command: curl --header "Content-Type:application/json" --data '{"Step":2,"StageCode":3}' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}"
-    shell: powershell.exe -ExecutionPolicy Bypass
 workflows:
   version: 2
   workflow:
