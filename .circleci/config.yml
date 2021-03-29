@@ -50,6 +50,14 @@ jobs:
         name: "Test Complete"
         when: always
         command: curl --header "Content-Type:application/json" --data '{"Step":2,"StageCode":3}' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}"
+  end-workflow:
+    machine:
+      image: windows-server-2019-vs2019:stable
+    steps:
+    - run:
+        name: "Trigger To Nococid"
+        command: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/end-workflow?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&gh_username=${CIRCLE_PROJECT_USERNAME}&gh_repository=${CIRCLE_PROJECT_REPONAME}"
+    resource_class: windows.medium
 workflows:
   version: 2
   workflow:
@@ -61,3 +69,6 @@ workflows:
       - test:
           requires:
             - build
+      - end-workflow:
+          requires:
+            - test
