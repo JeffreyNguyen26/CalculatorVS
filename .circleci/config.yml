@@ -30,12 +30,12 @@ jobs:
     steps:
     - checkout
     - run:
-        shell: powershell.exe -ExecutionPolicy Bypass
         name: "Test"
         command: |
             dotnet build ./NUnit.Test
             dotnet test ./NUnit.Test --no-build --logger "trx"
     - run:
+        shell: powershell.exe -ExecutionPolicy Bypass
         name: "Test Results"
         command: |
             dotnet tool install -g trx2junit
