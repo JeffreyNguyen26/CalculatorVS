@@ -6,12 +6,6 @@ jobs:
     resource_class: windows.medium
     steps:
     - nococid-command-start-workflow
-  nococid-end-workflow:
-    machine:
-      image: windows-server-2019-vs2019:stable
-    resource_class: windows.medium
-    steps:
-    - nococid-command-end-workflow
   Build-1:
     machine:
       image: windows-server-2019-vs2019:stable
@@ -23,26 +17,37 @@ jobs:
         command: a
     - store_artifacts:
          path: a
+  Test-1:
+    machine:
+      image: windows-server-2019-vs2019:stable
+    resource_class: windows.medium
+    steps:
+    - checkout
+    - run:
+        name: a
+        command: a
+    - store_artifacts:
+         path: a
 workflows:
-  version: 
+  version: 2.1
   workflow:
     jobs:
       - Build-1:
           requires:
             - nococid-start-workflow
-          pre-steps:
+          post-steps:
+            - nococid-command-job-done
+      - Test-1:
+          requires:
+            - nococid-start-workflow
+            - Build-1
+          post-steps:
             - nococid-command-job-done
       - nococid-start-workflow
-      - nococid-end-workflow:
-          requires:
-            - Build-1
 commands:
   nococid-command-start-workflow:
     steps:
       - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&branch_id=e50cb276-9ff7-454b-ee1d-08d8f040ef2c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
   nococid-command-job-done:
     steps:
-      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
-  nococid-command-end-workflow:
-    steps:
-      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/end-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&circle_workflow_id=${CIRCLE_WORKFLOW_ID}&gh_username=${CIRCLE_PROJECT_USERNAME}&gh_repository=${CIRCLE_PROJECT_REPONAME}"
+      - run: |          when: always          command:curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
