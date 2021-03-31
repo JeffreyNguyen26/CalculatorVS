@@ -1,4 +1,4 @@
-version: 2.1
+version: 1
 jobs:
   nococid-start-workflow:
     machine:
@@ -19,6 +19,16 @@ jobs:
     - checkout
     - run:
         name: a
+        command: z
+    - store_artifacts:
+         path: z
+  Build-2:
+    machine:
+      image: Dit me gia do
+    steps:
+    - checkout
+    - run:
+        name: a
         command: a
     - store_artifacts:
          path: a
@@ -27,7 +37,27 @@ workflows:
   workflow:
     jobs:
    - Build-1:
-
+          requires:
+            - nococid-start-workflow
+          pre-steps:
+            - nococid-command-job-done
+   - Build-2:
+          requires:
+            - nococid-start-workflow
+          pre-steps:
+            - nococid-command-job-done
+       requires:
+        - Build-1
+          requires:
+            - nococid-start-workflow
+          pre-steps:
+            - nococid-command-job-done
+      - nococid-start-workflow
+      - nococid-end-workflow:
+          requires:
+            - ld-1
+            - ld-2
+            - equires
 commands:
   nococid-command-start-workflow:
     steps:
