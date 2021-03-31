@@ -22,7 +22,7 @@ jobs:
         command: a
     - store_artifacts:
          path: a
-  Build-2:
+  Test-1:
     machine:
       image: Dit me gia do
     steps:
@@ -33,25 +33,25 @@ jobs:
     - store_artifacts:
          path: a
 workflows:
-  version: 2.1
+  version: 
   workflow:
     jobs:
-    - Build-2:
+    - Build-1:
           requires:
             - nococid-start-workflow
           pre-steps:
             - nococid-command-job-done
-    - Build-1:
+    - Test-1:
           requires:
             - nococid-start-workflow
-        - Build-2
+          - Build-1
           pre-steps:
             - nococid-command-job-done
       - nococid-start-workflow
       - nococid-end-workflow:
           requires:
-            - ild-2
             - ild-1
+            - st-1
 commands:
   nococid-command-start-workflow:
     steps:
