@@ -18,20 +18,20 @@ jobs:
     steps:
     - checkout
     - run:
-        name: a
-        command: a
+        name: 1
+        command: 1
     - store_artifacts:
-         path: a
+         path: 1
   Build-2:
     machine:
       image: Dit me gia do
     steps:
     - checkout
     - run:
-        name: b
-        command: b
+        name: 2
+        command: 2
     - store_artifacts:
-         path: b
+         path: 2
 workflows:
   version: 
   workflow:
@@ -42,14 +42,9 @@ workflows:
           pre-steps:
             - nococid-command-job-done
     - Build-2:
-          requires:
-            - nococid-start-workflow
-          pre-steps:
-            - nococid-command-job-done
-       requires:
+        requires:
+          - nococid-start-workflow
         - Build-1
-          requires:
-            - nococid-start-workflow
           pre-steps:
             - nococid-command-job-done
       - nococid-start-workflow
@@ -57,7 +52,6 @@ workflows:
           requires:
             - ild-1
             - ild-2
-            - equires
 commands:
   nococid-command-start-workflow:
     steps:
