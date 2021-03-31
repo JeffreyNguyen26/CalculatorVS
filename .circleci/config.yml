@@ -1,4 +1,4 @@
-version: 2.1
+version:  2.1
 jobs:
   nococid-start-workflow:
     machine:
@@ -28,30 +28,29 @@ jobs:
     steps:
     - checkout
     - run:
-        name: b
-        command: b
+        name: a
+        command: a
     - store_artifacts:
-         path: b
+         path: a
 workflows:
   version: 
   workflow:
     jobs:
+    - Build-1:
+          requires:
+            - nococid-start-workflow
+          pre-steps:
+            - nococid-command-job-done
     - Test-1:
           requires:
             - nococid-start-workflow
           pre-steps:
             - nococid-command-job-done
-    - Build-1:
-          requires:
-            - nococid-start-workflow
-            - Test-1
-          pre-steps:
-            - nococid-command-job-done
       - nococid-start-workflow
       - nococid-end-workflow:
           requires:
-            - Test-1
             - Build-1
+            - Test-1
 commands:
   nococid-command-start-workflow:
     steps:
