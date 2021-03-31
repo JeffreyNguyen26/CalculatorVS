@@ -2,13 +2,13 @@ version: 2.1
 commands:
   nococid-command-start-workflow:
     steps:
-      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=a9bd72b6-f57d-4721-23eb-08d8f0dcf11c&branch_id=e576a1e9-7c5d-41d0-ee1f-08d8f040ef2c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
+      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=a9bd72b6-f57d-4721-23eb-08d8f0dcf11c&branch_id=e576a1e9-7c5d-41d0-ee1f-08d8f040ef2c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
   nococid-command-job-done:
     steps:
-      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
+      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
   nococid-command-end-workflow:
     steps:
-      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/end-workflow?sprint_id=a9bd72b6-f57d-4721-23eb-08d8f0dcf11c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}&gh_username=${CIRCLE_PROJECT_USERNAME}&gh_repository=${CIRCLE_PROJECT_REPONAME}"
+      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/end-workflow?sprint_id=a9bd72b6-f57d-4721-23eb-08d8f0dcf11c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}&gh_username=${CIRCLE_PROJECT_USERNAME}&gh_repository=${CIRCLE_PROJECT_REPONAME}"
   abc:
     steps:
       - run: abcxyz
@@ -62,27 +62,9 @@ workflows:
   version: 2
   workflow:
     jobs:
-      - start-workflow:
-          requires:
-            - nococid-start-workflow
-          pre-steps:
-            - nococid-command-job-done
       - build:
           requires:
             - nococid-start-workflow
-            - start-workflow
-          pre-steps:
-            - nococid-command-job-done
-      - test:
-          requires:
-            - nococid-start-workflow
-            - build
-          pre-steps:
-            - nococid-command-job-done
-      - end-workflow:
-          requires:
-            - nococid-start-workflow
-            - test
           pre-steps:
             - nococid-command-job-done
       - test:
@@ -91,15 +73,13 @@ workflows:
           pre-steps:
             - nococid-command-job-done
       - test:
+          name: tg
           pre-steps:
             - nococid-command-job-done
-            - chothangngu
           requires:
             - nococid-start-workflow
       - nococid-start-workflow
       - nococid-end-workflow:
           requires:
-            - start-workflow
             - build
-            - test
-            - end-workflow
+            - tg
