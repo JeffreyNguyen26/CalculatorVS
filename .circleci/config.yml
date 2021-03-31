@@ -39,8 +39,8 @@ jobs:
     - run:
         name: "Test"
         command: |
-            dotnet build./NUnit.Test
-            dotnet test./NUnit.Test --no-build --logger "trx"
+            dotnet build ./NUnit.Test
+            dotnet test ./NUnit.Test --no-build --logger "trx"
     - run:
         shell: powershell.exe -ExecutionPolicy Bypass
         name: "Test Results"
