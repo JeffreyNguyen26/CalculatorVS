@@ -31,7 +31,7 @@ jobs:
     - checkout
     - run:
         name: a
-        command: echo "a"
+        command: a 
     - store_artifacts:
          path: a
 workflows:
