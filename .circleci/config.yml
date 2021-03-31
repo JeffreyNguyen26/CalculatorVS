@@ -17,7 +17,7 @@ jobs:
         command: a
     - store_artifacts:
          path: a
-    - run: |
+    - run:
         when: always
         command: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
   Test-1:
