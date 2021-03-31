@@ -14,7 +14,7 @@ jobs:
     - checkout
     - run:
         name: a
-        command: ab
+        command: abc
     - store_artifacts:
          path: a
   Build-2:
