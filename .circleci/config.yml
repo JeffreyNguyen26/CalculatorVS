@@ -14,7 +14,7 @@ jobs:
     - checkout
     - run:
         name: a
-        command: abcdef
+        command: abcdefg
     - store_artifacts:
          path: a
   Build-2:
