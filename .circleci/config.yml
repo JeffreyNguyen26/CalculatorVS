@@ -1,5 +1,30 @@
 version: 2.1
+commands:
+  nococid-command-start-workflow:
+    steps:
+      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&branch_id=e50cb276-9ff7-454b-ee1d-08d8f040ef2c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
+  nococid-command-job-done:
+    steps:
+      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
+  nococid-command-end-workflow:
+    steps:
+      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/end-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&circle_workflow_id=${CIRCLE_WORKFLOW_ID}&gh_username=${CIRCLE_PROJECT_USERNAME}&gh_repository=${CIRCLE_PROJECT_REPONAME}"
+  abc:
+    steps:
+      - run: abcxyz
 jobs:
+  nococid-start-workflow:
+    machine:
+      image: windows-server-2019-vs2019:stable
+    resource_class: windows.medium
+    steps:
+    - nococid-command-start-workflow
+  nococid-end-workflow:
+    machine:
+      image: windows-server-2019-vs2019:stable
+    resource_class: windows.medium
+    steps:
+    - nococid-command-end-workflow
   build:
     machine:
       image: windows-server-2019-vs2019:stable
@@ -8,69 +33,50 @@ jobs:
     - checkout
     - run:
         name: "Build"
-        command: dotnet build ./CalculatorVS > /artifact
+        command: dotnet build ./CalculatorVS
     - store_artifacts:
         path: ./CalculatorVS/bin/Debug/netcoreapp3.1
         destination: BuiltFile
-    shell: powershell.exe -ExecutionPolicy Bypass
-
-  long:
+  test:
     machine:
       image: windows-server-2019-vs2019:stable
     resource_class: windows.medium
     steps:
     - checkout
-
-  thang:
-    machine:
-      image: windows-server-2019-vs2019:stable
-    resource_class: windows.medium
-    steps:
-    - checkout
-
-  # test:
-  #   machine:
-  #     image: windows-server-2019-vs2019:stable
-  #   resource_class: windows.medium
-  #   steps:
-  #   - checkout
-  #   - run:
-  #       name: "Run Application Tests"
-  #       command: dotnet test "NUnit.Test/NUnit.Test.csproj" --logger trx 
-  #   - store_test_results:
-  #       path: ./NUnit.Test/TestResults
-  #   - store_artifacts:
-  #       path: ./NUnit.Test/TestResults
-  #       destination: TestResults
-
-  # deployment:
-  #   machine:
-  #     image: windows-server-2019-vs2019:stable
-  #   resource_class: windows.medium
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: Deploy Master to Heroku
-  #         command: |
-  #           git push https://heroku:$58b7661a-6f18-4d28-8853-096cd5da7138@git.heroku.com/$CalculatorVS.git master
-
+    - run:
+        name: "Test"
+        command: |
+            dotnet build./NUnit.Test
+            dotnet test./NUnit.Test --no-build --logger "trx"
+    - run:
+        shell: powershell.exe -ExecutionPolicy Bypass
+        name: "Test Results"
+        when: always
+        command: |
+            dotnet tool install -g trx2junit
+            trx2junit./NUnit.Test/TestResults/*.trx
+    - store_test_results:
+        path: ./NUnit.Test/TestResults
+    - store_artifacts:
+        path: ./NUnit.Test/TestResults
+        destination: TestResults
 workflows:
   version: 2
   workflow:
     jobs:
       - build:
           requires:
-            - thang
-      - long:
+            - nococid-start-workflow
+          pre-steps:
+            - nococid-command-job-done
+      - test:
+          requires:
+            - nococid-start-workflow
+            - build
+          pre-steps:
+            - nococid-command-job-done
+      - nococid-start-workflow
+      - nococid-end-workflow:
           requires:
             - build
-      - thang
-
-      # - test:
-      #     requires:
-      #       - build
-      # - deployment:
-      #     requires:
-      #       - build
-
-
+            - test
