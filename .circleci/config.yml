@@ -17,6 +17,7 @@ jobs:
         command: a
     - store_artifacts:
          path: a
+    - nococid-command-job-done
   Test-1:
     machine:
       image: windows-server-2019-vs2019:stable
