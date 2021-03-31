@@ -2,7 +2,7 @@ version: 2.1
 commands:
   nococid-command-start-workflow:
     steps:
-      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=a9bd72b6-f57d-4721-23eb-08d8f0dcf11c&branch_id=e576a1e9-7c5d-41d0-ee1f-08d8f040ef2c&number_of_jobs=4&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
+      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=a9bd72b6-f57d-4721-23eb-08d8f0dcf11c&branch_id=e576a1e9-7c5d-41d0-ee1f-08d8f040ef2c&number_of_jobs=2&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
   nococid-command-job-done:
     steps:
       - run:
@@ -57,39 +57,15 @@ workflows:
   version: 2
   workflow:
     jobs:
-      - start-workflow:
-          requires:
-            - nococid-start-workflow
-          post-steps:
-            - nococid-command-job-done
       - build:
           requires:
             - nococid-start-workflow
-            - start-workflow
           post-steps:
             - nococid-command-job-done
       - test:
           requires:
             - nococid-start-workflow
             - build
-          post-steps:
-            - nococid-command-job-done
-      - end-workflow:
-          requires:
-            - nococid-start-workflow
-            - test
-          post-steps:
-            - nococid-command-job-done
-      - test:
-          requires:
-            - nococid-start-workflow
-          post-steps:
-            - nococid-command-job-done
-      - test:
-          pre-steps:
-            - chothangngu
-          requires:
-            - nococid-start-workflow
           post-steps:
             - nococid-command-job-done
       - nococid-start-workflow
