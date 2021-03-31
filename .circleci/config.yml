@@ -28,30 +28,30 @@ jobs:
     steps:
     - checkout
     - run:
-        name: a
-        command: a
+        name: f
+        command: f
     - store_artifacts:
-         path: a
+         path: f
 workflows:
   version: 
   workflow:
     jobs:
-    - Build-1:
+    - Test-1:
           requires:
             - nococid-start-workflow
           pre-steps:
             - nococid-command-job-done
-    - Test-1:
+    - Build-1:
           requires:
             - nococid-start-workflow
-          - Build-1
+            - Test-1
           pre-steps:
             - nococid-command-job-done
       - nococid-start-workflow
       - nococid-end-workflow:
           requires:
-            - ild-1
             - st-1
+            - ild-1
 commands:
   nococid-command-start-workflow:
     steps:
