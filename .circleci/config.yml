@@ -1,13 +1,28 @@
 version: 2.1
+commands:
+  nococid-command-start-workflow:
+    steps:
+      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=a9bd72b6-f57d-4721-23eb-08d8f0dcf11c&branch_id=e576a1e9-7c5d-41d0-ee1f-08d8f040ef2c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
+  nococid-command-job-done:
+    steps:
+      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
+  nococid-command-end-workflow:
+    steps:
+      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/end-workflow?sprint_id=a9bd72b6-f57d-4721-23eb-08d8f0dcf11c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}&gh_username=${CIRCLE_PROJECT_USERNAME}&gh_repository=${CIRCLE_PROJECT_REPONAME}"
+  abc:
+    steps:
+      - run: abcxyz
 jobs:
-  start-workflow:
+  nococid-start-workflow:
     machine:
       image: windows-server-2019-vs2019:stable
     steps:
-    - run:
-        name: "Trigger To Nococid"
-        command: curl --header "Content-Type:application/json" --data '{"SprintId":"4ce069f1-7ce7-4701-21a4-08d8f03ffdbf","BranchId":"e576a1e9-7c5d-41d0-ee1f-08d8f040ef2c"}' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
-    resource_class: windows.medium
+    - nococid-command-start-workflow
+  nococid-end-workflow:
+    machine:
+      image: windows-server-2019-vs2019:stable
+    steps:
+    - nococid-command-end-workflow
   build:
     machine:
       image: windows-server-2019-vs2019:stable
@@ -20,9 +35,6 @@ jobs:
     - store_artifacts:
         path: ./CalculatorVS/bin/Debug/netcoreapp3.1
         destination: BuiltFile
-    - run:
-        name: "Build Complete"
-        command: curl --header "Content-Type:application/json" --data '{"Step":1,"StageCode":2}' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}"
   test:
     machine:
       image: windows-server-2019-vs2019:stable
@@ -32,43 +44,62 @@ jobs:
     - run:
         name: "Test"
         command: |
-            dotnet build ./NUnit.Test
-            dotnet test ./NUnit.Test --no-build --logger "trx"
+            dotnet build./NUnit.Test
+            dotnet test./NUnit.Test --no-build --logger "trx"
     - run:
         shell: powershell.exe -ExecutionPolicy Bypass
         name: "Test Results"
         when: always
         command: |
             dotnet tool install -g trx2junit
-            trx2junit ./NUnit.Test/TestResults/*.trx
+            trx2junit./NUnit.Test/TestResults/*.trx
     - store_test_results:
         path: ./NUnit.Test/TestResults
     - store_artifacts:
         path: ./NUnit.Test/TestResults
         destination: TestResults
-    - run:
-        name: "Test Complete"
-        when: always
-        command: curl --header "Content-Type:application/json" --data '{"Step":2,"StageCode":3}' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}"
-  end-workflow:
-    machine:
-      image: windows-server-2019-vs2019:stable
-    steps:
-    - run:
-        name: "Trigger To Nococid"
-        command: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/end-workflow?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&gh_username=${CIRCLE_PROJECT_USERNAME}&gh_repository=${CIRCLE_PROJECT_REPONAME}"
-    resource_class: windows.medium
 workflows:
   version: 2
   workflow:
     jobs:
-      - start-workflow
+      - start-workflow:
+          requires:
+            - nococid-start-workflow
+          pre-steps:
+            - nococid-command-job-done
       - build:
           requires:
+            - nococid-start-workflow
             - start-workflow
+          pre-steps:
+            - nococid-command-job-done
       - test:
           requires:
+            - nococid-start-workflow
             - build
+          pre-steps:
+            - nococid-command-job-done
       - end-workflow:
           requires:
+            - nococid-start-workflow
             - test
+          pre-steps:
+            - nococid-command-job-done
+      - test:
+          requires:
+            - nococid-start-workflow
+          pre-steps:
+            - nococid-command-job-done
+      - test:
+          pre-steps:
+            - nococid-command-job-done
+            - chothangngu
+          requires:
+            - nococid-start-workflow
+      - nococid-start-workflow
+      - nococid-end-workflow:
+          requires:
+            - start-workflow
+            - build
+            - test
+            - end-workflow
