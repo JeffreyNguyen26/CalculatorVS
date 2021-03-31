@@ -17,9 +17,6 @@ jobs:
         command: a
     - store_artifacts:
          path: a
-    - run:
-        when: always
-        command: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
   Test-1:
     machine:
       image: windows-server-2019-vs2019:stable
@@ -38,12 +35,21 @@ workflows:
       - Build-1:
           requires:
             - nococid-start-workflow
+          post-steps:
+            - nococid-command-job-done
       - Test-1:
           requires:
             - nococid-start-workflow
             - Build-1
+          post-steps:
+            - nococid-command-job-done
       - nococid-start-workflow
 commands:
   nococid-command-start-workflow:
     steps:
-      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&branch_id=e50cb276-9ff7-454b-ee1d-08d8f040ef2c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"      
+      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&branch_id=e50cb276-9ff7-454b-ee1d-08d8f040ef2c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
+  nococid-command-job-done:
+    steps:
+      - run:
+          when: always
+          command: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
