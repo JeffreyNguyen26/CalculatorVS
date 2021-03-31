@@ -1,4 +1,4 @@
-version:  2.1
+version: 2.1
 jobs:
   nococid-start-workflow:
     machine:
@@ -22,7 +22,7 @@ jobs:
         command: a
     - store_artifacts:
          path: a
-  Test-1:
+  Build-2:
     machine:
       image: windows-server-2019-vs2019:stable
     steps:
@@ -36,21 +36,22 @@ workflows:
   version: 
   workflow:
     jobs:
-    - Build-1:
+      - Build-1:
           requires:
             - nococid-start-workflow
           pre-steps:
             - nococid-command-job-done
-    - Test-1:
+      - Build-2:
           requires:
             - nococid-start-workflow
+            - Build-1
           pre-steps:
             - nococid-command-job-done
       - nococid-start-workflow
       - nococid-end-workflow:
           requires:
             - Build-1
-            - Test-1
+            - Build-2
 commands:
   nococid-command-start-workflow:
     steps:
