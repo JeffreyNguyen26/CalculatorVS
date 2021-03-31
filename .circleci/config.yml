@@ -31,10 +31,10 @@ workflows:
 commands:
   nococid-command-start-workflow:
     steps:
-      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&branch_id=e50cb276-9ff7-454b-ee1d-08d8f040ef2c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
+      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/start-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&branch_id=e50cb276-9ff7-454b-ee1d-08d8f040ef2c&circle_workflow_id=${CIRCLE_WORKFLOW_ID}"
   nococid-command-job-done:
     steps:
-      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
+      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/job-done?circle_workflow_id=${CIRCLE_WORKFLOW_ID}&circle_job_num=${CIRCLE_BUILD_NUM}&stage=${CIRCLE_STAGE}"
   nococid-command-end-workflow:
     steps:
-      - run: curl --header "Content-Type: application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/end-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&circle_workflow_id=${CIRCLE_WORKFLOW_ID}&gh_username=${CIRCLE_PROJECT_USERNAME}&gh_repository=${CIRCLE_PROJECT_REPONAME}"
+      - run: curl --header "Content-Type:application/json" --data '' -X POST "http://toan0701.ddns.net:9080/Nococid/api/Listeners/CircleCI/end-workflow?sprint_id=4ce069f1-7ce7-4701-21a4-08d8f03ffdbf&circle_workflow_id=${CIRCLE_WORKFLOW_ID}&gh_username=${CIRCLE_PROJECT_USERNAME}&gh_repository=${CIRCLE_PROJECT_REPONAME}"
